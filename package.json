@@ -2,10 +2,23 @@
   "name": "ts-router",
   "version": "0.1.3",
   "description": "koa router middleware, typescript fully supported, jersey like coding",
-  "main": "dist/index.js",
+  "main": "lib/index.js",
+  "typings": "./typings/ts-router/ts-router.d.ts",
+  "files": [
+    "lib",
+    "src",
+    "typings/ts-router"
+  ],
   "scripts": {
-    "test": "node --harmony `which gulp` test",
-    "install": "gulp build;gulp install"
+    "test": "npm run test:compile && mocha .dist/test/**/*.js",
+    "prepublish": "npm run compile",
+    "compile": "rm -fr ./lib && tsc --outDir lib",
+    "cover": "npm run cover:prepare && npm run cover:run && npm run cover:remap",
+    "cover:clean": "rm -fr coverage",
+    "cover:prepare": "npm run test:compile && npm run cover:clean",
+    "cover:run": "istanbul cover --print=none --report=json _mocha -- .dist/**/*.js",
+    "cover:remap": "mv coverage/coverage-final.json coverage/coverage.json && remap-istanbul -i coverage/coverage.json -o coverage/coverage.json && istanbul report lcov text",
+    "test:compile": "rm -fr .dist && tsc -p test --outDir .dist"
   },
   "dependencies": {
     "co-body": "^4.0.0",
@@ -16,20 +29,14 @@
     "reflect-metadata": "^0.1.3"
   },
   "devDependencies": {
-    "babel": "^6.5.2",
-    "babel-preset-es2015": "^6.5.0",
-    "fs-extra": "^0.26.5",
-    "gulp": "^3.9.1",
-    "gulp-babel": "^6.1.2",
-    "gulp-istanbul": "^0.10.3",
-    "gulp-mocha": "^2.2.0",
-    "gulp-typescript": "^2.12.0",
-    "merge2": "^1.0.1",
+    "istanbul": "^0.4.3",
     "mocha": "^2.4.5",
-    "supertest": "^1.2.0"
+    "remap-istanbul": "^0.6.4",
+    "supertest": "^1.2.0",
+    "typescript": "^1.8.10"
   },
   "engines": {
-    "node": ">=4.0.0"
+    "node": ">=6.2.0"
   },
   "repository": {
     "type": "git",
